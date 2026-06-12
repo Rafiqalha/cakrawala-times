@@ -10,6 +10,13 @@
 
 ---
 
+## Informasi UAS
+- **Nama Lengkap:** Rafiq Alhariri Andriansyah
+- **NIM:** 240605110178
+- **Tautan Video YouTube:** [Isi dengan Link YouTube Anda di sini]
+
+---
+
 ## Fitur
 
 ### Frontend Publik

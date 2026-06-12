@@ -45,7 +45,7 @@ class FrontEndController extends Controller
         // Artikel Terkait
         $related = Artikel::where('id_kategori', $artikel->id_kategori)
                         ->where('id', '!=', $artikel->id)
-                        ->take(3)
+                        ->take(5)
                         ->get();
 
         // Hitung Reaksi
