@@ -19,7 +19,7 @@ Route::get('/kategori-artikel/{id}', [FrontEndController::class, 'byKategori'])-
 Route::get('/cari', [FrontEndController::class, 'search'])->name('search');
 Route::get('/tentang-kami', [FrontEndController::class, 'about'])->name('about');
 Route::get('/redaksi', [FrontEndController::class, 'redaksi'])->name('redaksi');
-Route::get('/penulis/{user_name}', [FrontEndController::class, 'penulis'])->name('penulis.show');
+Route::get('/profil-penulis/{user_name}', [FrontEndController::class, 'penulis'])->name('penulis.show');
 Route::get('/kontak', [FrontEndController::class, 'contact'])->name('contact');
 Route::get('/kebijakan-privasi', [FrontEndController::class, 'privacy'])->name('privacy');
 Route::view('/offline', 'frontend.offline')->name('offline');

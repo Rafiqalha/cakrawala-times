@@ -370,110 +370,72 @@
 @section('content')
 
 <div class="container py-4">
-    <div class="mb-4 text-center">
-        <a href="{{ route('kategori.public', $artikel->id_kategori) }}" class="badge-category">
-            {{ $artikel->kategori->nama_kategori ?? __('Tanpa Kategori') }}
-        </a>
-    </div>
-
-    <!-- A11y & TTS Toolbar -->
-    <div class="a11y-toolbar d-flex align-items-center justify-content-center mb-4 p-3 shadow-sm rounded-4" style="background-color: var(--input-bg); max-width: 800px; margin: 0 auto;">
-        <span class="me-3 fw-medium" style="color: var(--text-muted);"><span class="material-icons-outlined align-middle me-1">accessibility_new</span> Aksesibilitas:</span>
-        <button id="btn-text-decrease" class="btn btn-sm btn-outline-secondary me-2 rounded-circle" style="width: 36px; height: 36px;" title="Perkecil Teks">A-</button>
-        <button id="btn-text-increase" class="btn btn-sm btn-outline-secondary me-4 rounded-circle" style="width: 36px; height: 36px;" title="Perbesar Teks">A+</button>
-        
-        <button id="btn-tts-play" class="btn btn-sm btn-primary rounded-pill d-flex align-items-center me-2">
-            <span class="material-icons-outlined me-1" style="font-size: 18px;">play_arrow</span> <span id="tts-play-text">Dengarkan</span>
-        </button>
-        <button id="btn-tts-stop" class="btn btn-sm btn-danger rounded-pill d-flex align-items-center d-none">
-            <span class="material-icons-outlined me-1" style="font-size: 18px;">stop</span> Hentikan
-        </button>
-    </div>
-
-    <header class="article-header">
-        @php
-            $wordCount = str_word_count(strip_tags($artikel->isi_artikel));
-            $readingTime = ceil($wordCount / 200);
-            if ($readingTime < 1) $readingTime = 1;
-            $currentUrl = urlencode(Request::url());
-            $shareTitle = urlencode($artikel->judul);
-            $imageUrl = $artikel->gambar && $artikel->gambar !== 'default.png' ? asset('storage/gambar/' . $artikel->gambar) : url('/images/default-image.jpg');
-        @endphp
-        
-        <div class="d-flex justify-content-center mb-4">
-            <button id="btn-save-bookmark" class="btn btn-outline-primary rounded-pill d-flex align-items-center"
-                data-id="{{ $artikel->id }}" 
-                data-title="{{ $artikel->judul }}" 
-                data-image="{{ $imageUrl }}" 
-                data-url="{{ Request::url() }}" 
-                data-date="{{ \Carbon\Carbon::parse($artikel->tanggal)->translatedFormat('d M Y') }}">
-                <span class="material-icons-outlined me-1" id="bookmark-icon-state">bookmark_border</span> <span id="bookmark-text-state">Simpan Artikel</span>
-            </button>
-        </div>
-
-        <h1 class="article-title">{{ $artikel->judul }}</h1>
-
-        <div class="article-meta-box mt-4">
-            <div class="meta-item">
-                @php
-                    $fotoPenulis = $artikel->penulis && $artikel->penulis->foto ? $artikel->penulis->foto : 'default.png';
-                @endphp
-                <img src="{{ asset('storage/foto/' . $fotoPenulis) }}" class="author-avatar" alt="Author">
-                <a href="{{ route('penulis.show', $artikel->penulis->user_name ?? '#') }}" class="fw-medium text-main text-decoration-none" style="color: var(--text-main);">{{ $artikel->penulis->nama_lengkap ?? 'Unknown' }}</a>
-            </div>
-            <div style="width: 4px; height: 4px; background-color: var(--border-color); border-radius: 50%;"></div>
-            <div class="meta-item">
-                <span class="material-icons-outlined meta-icon">calendar_today</span>
-                <span>{{ \Carbon\Carbon::parse($artikel->tanggal)->translatedFormat('d M Y') }}</span>
-            </div>
-            <div style="width: 4px; height: 4px; background-color: var(--border-color); border-radius: 50%;"></div>
-            <div class="meta-item" title="Estimasi waktu baca">
-                <span class="material-icons-outlined meta-icon">timer</span>
-                <span>{{ $readingTime }} {{ __('Menit') }}</span>
-            </div>
-            <div style="width: 4px; height: 4px; background-color: var(--border-color); border-radius: 50%;"></div>
-            <div class="meta-item" title="Jumlah Tayangan">
-                <span class="material-icons-outlined meta-icon text-primary">visibility</span>
-                <span id="live-views-count" class="live-counter">{{ $artikel->views ?? 0 }}</span>
-            </div>
-            <div style="width: 4px; height: 4px; background-color: var(--border-color); border-radius: 50%;"></div>
-            <div class="meta-item" title="Total Reaksi">
-                <span class="material-icons-outlined meta-icon text-danger">favorite</span>
-                <span id="live-reactions-count" class="live-counter">{{ array_sum($reaksiCounts) }}</span>
-            </div>
-        </div>
-
-        <div class="share-container">
-            <span class="share-label">Bagikan</span>
-            <div class="share-icons-row">
-                <a href="https://api.whatsapp.com/send?text={{ $shareTitle }}%20{{ $currentUrl }}" target="_blank" class="share-icon-btn wa" title="WhatsApp">
-                    <i class="fa-brands fa-whatsapp"></i>
+    <div class="row g-5">
+<div class="col-lg-8">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb" style="font-size: 0.9rem; font-weight: 500;">
+            <li class="breadcrumb-item"><a href="{{ route('home') }}" class="text-success text-decoration-none">Beranda</a></li>
+            <li class="breadcrumb-item">
+                <a href="{{ route('kategori.public', $artikel->id_kategori) }}" class="text-success text-decoration-none">
+                    {{ $artikel->kategori->nama_kategori ?? __('Tanpa Kategori') }}
                 </a>
-                <a href="https://twitter.com/intent/tweet?url={{ $currentUrl }}&text={{ $shareTitle }}" target="_blank" class="share-icon-btn tw" title="X (Twitter)">
-                    <i class="fa-brands fa-x-twitter"></i>
-                </a>
-                <a href="https://www.facebook.com/sharer/sharer.php?u={{ $currentUrl }}" target="_blank" class="share-icon-btn fb" title="Facebook">
-                    <i class="fa-brands fa-facebook-f"></i>
-                </a>
-                <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ $currentUrl }}&title={{ $shareTitle }}" target="_blank" class="share-icon-btn li" title="LinkedIn">
-                    <i class="fa-brands fa-linkedin-in"></i>
-                </a>
-                <button class="share-icon-btn cp" onclick="copyLink()" title="Salin Link">
-                    <span class="material-icons-outlined" style="font-size: 20px;">content_copy</span>
-                </button>
-            </div>
-        </div>
-    </header>
+            </li>
+            <li class="breadcrumb-item text-muted active" aria-current="page">{{ \Illuminate\Support\Str::limit($artikel->judul, 40) }}</li>
+        </ol>
+    </nav>
 
+    <!-- Main Image (Top) -->
     @if($artikel->gambar && $artikel->gambar !== 'default.png')
-        <div style="overflow: hidden; border-radius: 20px; max-width: 900px; margin: 0 auto 64px auto; box-shadow: var(--card-shadow);">
-            <img src="{{ asset('storage/gambar/' . $artikel->gambar) }}" class="article-cover m-0 shadow-none" alt="{{ $artikel->judul }}">
+        <div style="overflow: hidden; border-radius: 16px; margin-bottom: 24px; box-shadow: var(--card-shadow);">
+            <img src="{{ asset('storage/gambar/' . $artikel->gambar) }}" style="width: 100%; height: 400px; object-fit: cover;" alt="{{ $artikel->judul }}">
         </div>
     @else
-        <div class="article-cover d-flex align-items-center justify-content-center" style="background-color: var(--input-bg); height: 400px;">
+        <div class="d-flex align-items-center justify-content-center" style="background-color: var(--input-bg); height: 400px; border-radius: 16px; margin-bottom: 24px;">
             <span class="material-icons-outlined" style="font-size: 80px; color: var(--text-muted);">image</span>
         </div>
     @endif
+
+    <!-- Category Badge -->
+    <div class="mb-3">
+        <span class="badge" style="background-color: #e8f0fe; color: #1a73e8; font-weight: 500; padding: 6px 12px; border-radius: 20px;">
+            {{ $artikel->kategori->nama_kategori ?? __('Tanpa Kategori') }}
+        </span>
+    </div>
+
+    <!-- Title -->
+    <h1 class="fw-bold mb-4" style="color: var(--text-main); font-size: 2rem; line-height: 1.3; letter-spacing: -0.5px;">
+        {{ $artikel->judul }}
+    </h1>
+
+    <!-- Metadata (Author & Date) -->
+    <div class="d-flex align-items-center mb-4 pb-4" style="font-size: 0.95rem; color: var(--text-muted); border-bottom: 1px solid var(--border-color);">
+        @php
+            $fotoPenulis = $artikel->penulis && $artikel->penulis->foto ? $artikel->penulis->foto : 'default.png';
+            $username = $artikel->penulis ? $artikel->penulis->user_name : '#';
+            $namaLengkap = $artikel->penulis->nama_lengkap ?? 'Redaksi';
+            $inisial = strtoupper(substr($namaLengkap, 0, 1));
+        @endphp
+        
+        @if($fotoPenulis !== 'default.png')
+            <img src="{{ asset('storage/foto/' . $fotoPenulis) }}" class="rounded-circle me-3" style="width: 40px; height: 40px; object-fit: cover;" alt="{{ $namaLengkap }}">
+        @else
+            <div class="d-flex align-items-center justify-content-center text-white me-3" style="width: 40px; height: 40px; border-radius: 50%; background-color: #1a73e8; font-size: 16px; font-weight: bold;">
+                {{ $inisial }}
+            </div>
+        @endif
+        
+        <div>
+            <a href="{{ route('penulis.show', $username) }}" class="text-decoration-none fw-bold d-block" style="color: var(--text-main); margin-bottom: 2px;" onmouseover="this.style.color='#1a73e8'" onmouseout="this.style.color='var(--text-main)'">
+                {{ $namaLengkap }}
+            </a>
+            <div class="small d-flex align-items-center">
+                <span>{{ \Carbon\Carbon::parse($artikel->tanggal)->translatedFormat('d F Y') }}</span>
+                <span class="mx-2">•</span>
+                <span>{{ \Carbon\Carbon::parse($artikel->created_at)->format('H:i') }} WIB</span>
+            </div>
+        </div>
+    </div>
 
     <article class="article-content" id="article-main-content">
         {{-- Menampilkan isi artikel (HTML) tanpa escaping --}}
@@ -530,41 +492,42 @@
             {{ __('Kembali ke Beranda') }}
         </a>
     </div>
+        </div>
 
-    <!-- Related Articles (Baca Juga) -->
-    @if(isset($artikelTerkait) && count($artikelTerkait) > 0)
-    <div class="mt-5 pt-5" style="border-top: 1px solid var(--border-color);">
-        <h3 class="related-title">{{ __('Baca Juga') }}</h3>
-        <div class="row g-4 mt-2">
-            @foreach($artikelTerkait as $rel)
-                <div class="col-md-4">
-                    <div class="related-card">
-                        <a href="{{ route('baca', $rel->id) }}">
+        <!-- Sidebar Column -->
+        <div class="col-lg-4">
+            <!-- Related Articles Widget -->
+            @if(isset($related) && count($related) > 0)
+            <div class="p-4 rounded-4" style="background-color: var(--bg-surface); box-shadow: var(--card-shadow); position: sticky; top: 100px;">
+                <h4 class="fw-bold mb-4" style="color: var(--text-main); border-bottom: 2px solid #1a73e8; display: inline-block; padding-bottom: 8px; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.5px;">{{ __('Artikel Terkait') }}</h4>
+                <div class="d-flex flex-column">
+                    @foreach($related as $rel)
+                        <div class="d-flex mb-3 pb-3" style="border-bottom: 1px solid var(--border-color);">
                             @if($rel->gambar && $rel->gambar !== 'default.png')
-                                <div style="overflow: hidden;">
-                                    <img src="{{ asset('storage/gambar/' . $rel->gambar) }}" class="related-img m-0" alt="{{ $rel->judul }}">
+                                <div style="flex-shrink: 0; margin-right: 16px; overflow: hidden; border-radius: 8px;">
+                                    <img src="{{ asset('storage/gambar/' . $rel->gambar) }}" alt="{{ $rel->judul }}" style="width: 80px; height: 80px; object-fit: cover; transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
                                 </div>
                             @else
-                                <div class="related-img d-flex align-items-center justify-content-center" style="background-color: var(--input-bg);">
+                                <div class="d-flex align-items-center justify-content-center flex-shrink: 0 me-3 rounded" style="width: 80px; height: 80px; background-color: var(--input-bg);">
                                     <span class="material-icons-outlined" style="color: var(--text-muted);">image</span>
                                 </div>
                             @endif
-                        </a>
-                        <div class="related-body">
-                            <a href="{{ route('baca', $rel->id) }}" class="related-heading">
-                                {{ \Illuminate\Support\Str::limit($rel->judul, 70) }}
-                            </a>
-                            <div class="mt-auto text-muted small d-flex align-items-center">
-                                <span class="material-icons-outlined me-1" style="font-size: 14px;">calendar_today</span>
-                                {{ \Carbon\Carbon::parse($rel->tanggal)->translatedFormat('d M Y') }}
+                            <div>
+                                <a href="{{ route('baca', $rel->id) }}" class="text-decoration-none fw-semibold" style="color: var(--text-main); font-size: 0.95rem; line-height: 1.4; display: block; margin-bottom: 6px;" onmouseover="this.style.color='#1a73e8'" onmouseout="this.style.color='var(--text-main)'">
+                                    {{ \Illuminate\Support\Str::limit($rel->judul, 60) }}
+                                </a>
+                                <div class="text-muted small d-flex align-items-center">
+                                    <span class="material-icons-outlined me-1" style="font-size: 14px;">calendar_today</span>
+                                    {{ \Carbon\Carbon::parse($rel->tanggal)->translatedFormat('d M Y') }}
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    @endforeach
                 </div>
-            @endforeach
-        </div>
-    </div>
-    @endif
+            </div>
+            @endif
+        </div> <!-- End of col-lg-4 -->
+    </div> <!-- End of row -->
 </div>
 
 @endsection

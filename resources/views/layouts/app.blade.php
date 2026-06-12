@@ -232,6 +232,12 @@
                             <span class="material-icons-outlined align-middle me-2">edit_note</span> Artikel
                         </a>
                     </li>
+                    <hr class="my-2">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('home') }}" target="_blank">
+                            <span class="material-icons-outlined align-middle me-2">public</span> Lihat Website
+                        </a>
+                    </li>
                 </ul>
             </div>
             <main class="col-md-10 p-4">
