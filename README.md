@@ -45,7 +45,7 @@
   </tr>
   <tr>
     <td><strong>Tautan Video YouTube</strong></td>
-    <td><a href="#">Video Demonstrasi Aplikasi</a></td>
+    <td><a href="https://youtu.be/kkiGHlSnvhQ?si=8aEG2u3FjsddgHYr">Video Demonstrasi Aplikasi</a></td>
   </tr>
 </table>
 
